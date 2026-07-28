@@ -480,16 +480,16 @@ test("英雄伙伴不使用整图假动作并保留拖动", () => {
   );
 });
 
-test("英雄素材重建时保留始皇 APNG 姿态帧", () => {
+test("英雄素材重建时为所有可动画伙伴保留 APNG 姿态帧", () => {
   const prepareScript = readFileSync(
     path.join(projectRoot, "scripts", "prepare-hero-assets.ps1"),
     "utf8",
   );
 
-  assert.match(
-    prepareScript,
-    /hero-001-companion\.png[\s\S]*?Test-Path[\s\S]*?Copy-Item[\s\S]*?continue/,
-  );
+  assert.match(prepareScript, /\$actionAssetRoot\s*=/);
+  assert.match(prepareScript, /"hero-\$id-companion\.png"/);
+  assert.match(prepareScript, /Test-Path[\s\S]*?Copy-Item[\s\S]*?continue/);
+  assert.doesNotMatch(prepareScript, /\$id\s+-eq\s+'001'/);
 });
 
 test("发布脚本把主题和 16 套匿名英雄整合为单一素材包", () => {

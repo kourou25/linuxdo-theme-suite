@@ -198,7 +198,9 @@ $suiteManifest |
 @"
 # LINUX DO Theme Suite v$Version 统一素材包
 
-一次导入即可获得 41 套常规主题、可用动态背景及 16 套匿名随机英雄素材。资源只保存在当前浏览器的 IndexedDB 中，不会上传到网站。
+一次导入即可获得 41 套常规主题、可用动态背景及 16 套匿名随机英雄素材。
+其中 14 套伙伴使用四帧透明 APNG 展示真实姿态变化，局部头像与纯装饰
+图标 2 套保持静态。资源只保存在当前浏览器的 IndexedDB 中，不会上传到网站。
 
 解压后，在主题工具中点击“导入统一素材包”，选择本目录。不要直接选择 ZIP 文件。
 
@@ -277,6 +279,7 @@ Remove-Item -LiteralPath $starterKitStageAbsolute -Recurse -Force
 @"
 # LINUX DO Theme Suite v$Version 发布文件
 
+- 随机英雄包含 14 套四帧透明 APNG 伙伴与 2 套静态伙伴。
 - $starterKitName：首选下载的新手整合包；一次解压即可获得脚本、素材和操作手册。
 - $coreScriptName：单独更新脚本时使用的轻量油猴脚本。
 - $suitePackName：单独更新素材时使用的统一素材包。

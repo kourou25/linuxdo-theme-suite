@@ -23,6 +23,23 @@ const projectRoot = path.resolve(
   "..",
 );
 
+const animatedCompanionIds = [
+  "001",
+  "003",
+  "004",
+  "005",
+  "006",
+  "007",
+  "009",
+  "010",
+  "011",
+  "012",
+  "013",
+  "014",
+  "015",
+  "016",
+];
+
 function createManifest() {
   return {
     schemaVersion: 1,
@@ -664,31 +681,73 @@ test("本地存在发布伙伴素材时，尺寸统一且画布四角完全透�
   assert.equal(result.status, 0, `${result.stdout}\n${result.stderr}`);
 });
 
-test("始皇伙伴发布素材包含真实姿态帧动画且保持透明画布", (context) => {
-  const companionPath = path.join(
+test("所有具备可见肢体的伙伴成品均包含真实姿态帧动画", (context) => {
+  const actionRoot = path.join(
+    projectRoot,
+    "assets",
+    "generated",
+    "hero-draw",
+    "v1.0.0",
+    "actions",
+  );
+  if (!existsSync(actionRoot)) {
+    context.skip("动作伙伴成品目录不存在");
+    return;
+  }
+  const script = [
+    "from PIL import Image",
+    "from pathlib import Path",
+    `root = Path(r'''${actionRoot}''')`,
+    `ids = ${JSON.stringify(animatedCompanionIds)}`,
+    "for hero_id in ids:",
+    "    path = root / f'hero-{hero_id}-companion.png'",
+    "    assert path.exists(), f'missing animated companion: {path.name}'",
+    "    with Image.open(path) as image:",
+    "        assert image.size == (640, 640), (path.name, image.size)",
+    "        assert getattr(image, 'is_animated', False), f'{path.name} is not animated'",
+    "        assert getattr(image, 'n_frames', 1) >= 4, (path.name, image.n_frames)",
+    "        for frame_index in range(image.n_frames):",
+    "            image.seek(frame_index)",
+    "            rgba = image.convert('RGBA')",
+    "            assert all(rgba.getpixel(point)[3] == 0 for point in ((0, 0), (639, 0), (0, 639), (639, 639))), (path.name, frame_index)",
+  ].join("\n");
+  const result = spawnSync("python", ["-c", script], {
+    cwd: projectRoot,
+    encoding: "utf8",
+  });
+  assert.equal(result.status, 0, `${result.stdout}\n${result.stderr}`);
+});
+
+test("V1 运行时素材包保留十四套 APNG 与两套静态伙伴", (context) => {
+  const companionRoot = path.join(
     projectRoot,
     "assets",
     "media-pack",
     "hero-draw",
     "v1.0.0",
     "companions",
-    "hero-001-companion.png",
   );
-  if (!existsSync(companionPath)) {
+  if (!existsSync(companionRoot)) {
     context.skip("完整伙伴素材仅随 GitHub Release 提供");
     return;
   }
   const script = [
     "from PIL import Image",
     "from pathlib import Path",
-    `path = Path(r'''${companionPath}''')`,
-    "with Image.open(path) as image:",
-    "    assert image.size == (640, 640), image.size",
-    "    assert getattr(image, 'is_animated', False), 'hero-001 is not animated'",
-    "    assert getattr(image, 'n_frames', 1) >= 4, image.n_frames",
-    "    image.seek(0)",
-    "    rgba = image.convert('RGBA')",
-    "    assert all(rgba.getpixel(point)[3] == 0 for point in ((0, 0), (639, 0), (0, 639), (639, 639)))",
+    `root = Path(r'''${companionRoot}''')`,
+    `animated_ids = set(${JSON.stringify(animatedCompanionIds)})`,
+    "files = sorted(root.glob('hero-*-companion.png'))",
+    "assert len(files) == 16, len(files)",
+    "for path in files:",
+    "    hero_id = path.stem.split('-')[1]",
+    "    with Image.open(path) as image:",
+    "        frame_count = getattr(image, 'n_frames', 1)",
+    "        if hero_id in animated_ids:",
+    "            assert getattr(image, 'is_animated', False), f'{path.name} is not animated'",
+    "            assert frame_count >= 4, (path.name, frame_count)",
+    "        else:",
+    "            assert hero_id in {'002', '008'}, hero_id",
+    "            assert frame_count == 1, (path.name, frame_count)",
   ].join("\n");
   const result = spawnSync("python", ["-c", script], {
     cwd: projectRoot,

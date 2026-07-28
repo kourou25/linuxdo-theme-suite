@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build a four-frame transparent APNG companion from a 2x2 sprite sheet."""
+"""Build a four-frame transparent APNG companion from any 2x2 sprite sheet."""
 
 from __future__ import annotations
 

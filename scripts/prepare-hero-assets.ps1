@@ -19,8 +19,8 @@ $companionPackRoot = Join-Path $packRoot 'companions'
 $genericBackground = Join-Path $generatedRoot 'hero-002-generic-moonlight.png'
 $fallbackBackground = Join-Path $generatedRoot 'backgrounds\hero-002-background.png'
 $fallbackCompanion = Join-Path $generatedRoot 'companions\hero-002-companion.png'
-$animatedCompanionSource = Join-Path $projectRoot `
-    "assets\generated\hero-draw\v$ActionAssetVersion\actions\hero-001-companion.png"
+$actionAssetRoot = Join-Path $projectRoot `
+    "assets\generated\hero-draw\v$ActionAssetVersion\actions"
 
 foreach ($directory in @(
     (Join-Path $generatedRoot 'backgrounds'),
@@ -288,13 +288,12 @@ foreach ($number in 1..16) {
         $background.Dispose()
     }
 
-    if (
-        $id -eq '001' -and
-        (Test-Path -LiteralPath $animatedCompanionSource -PathType Leaf)
-    ) {
+    $animatedCompanionSource = Join-Path $actionAssetRoot `
+        "hero-$id-companion.png"
+    if (Test-Path -LiteralPath $animatedCompanionSource -PathType Leaf) {
         Copy-Item `
             -LiteralPath $animatedCompanionSource `
-            -Destination (Join-Path $companionPackRoot 'hero-001-companion.png') `
+            -Destination (Join-Path $companionPackRoot "hero-$id-companion.png") `
             -Force
         continue
     }
