@@ -215,6 +215,7 @@ export function createThemePickerMarkup(
             <button type="button" data-ld-draw-hero>抽取英雄</button>
             <button type="button" data-ld-draw-background>只换背景</button>
             <button type="button" data-ld-draw-companion>只换伙伴</button>
+            <button type="button" data-ld-reset-companion-position>伙伴归位</button>
             <button type="button" data-ld-hide-companion>关闭伙伴</button>
           </div>
         </section>
@@ -341,6 +342,9 @@ export function mountThemePicker({
   );
   const hideCompanionButton = host.querySelector(
     "[data-ld-hide-companion]",
+  );
+  const resetCompanionPositionButton = host.querySelector(
+    "[data-ld-reset-companion-position]",
   );
   const status = host.querySelector("[data-ld-media-status]");
   let activeDrag = null;
@@ -665,6 +669,14 @@ export function mountThemePicker({
     }
     heroManager.hideCompanion();
     setStatus("伙伴已关闭", "success");
+  });
+  resetCompanionPositionButton?.addEventListener("click", () => {
+    if (!heroManager?.resetCompanionPosition) {
+      setStatus("伙伴功能尚未初始化。", "error");
+      return;
+    }
+    heroManager.resetCompanionPosition();
+    setStatus("伙伴已回到默认位置", "success");
   });
 
   applyPickerPosition(getValue(PICKER_POSITION_KEY, null));

@@ -26,6 +26,16 @@ assets/generated/wallpaper-expansion/v0.8.0/runtime/*
 assets/generated/wallpaper-expansion/v0.8.0/runtime/images/*
 !assets/generated/wallpaper-expansion/v0.8.0/runtime/images/*.jpg
 
+# 发布构建所需的真实姿态伙伴成品；动作分镜与抠图过程文件不入库
+!assets/generated/hero-draw/
+assets/generated/hero-draw/*
+!assets/generated/hero-draw/v1.0.0/
+assets/generated/hero-draw/v1.0.0/*
+!assets/generated/hero-draw/v1.0.0/actions/
+assets/generated/hero-draw/v1.0.0/actions/*
+!assets/generated/hero-draw/v1.0.0/actions/hero-001-companion.png
+!assets/generated/hero-draw/v1.0.0/actions/README.md
+
 # 内部记录、历史归档与本地工具
 archive/
 research/

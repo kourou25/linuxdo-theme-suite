@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="zh-CN" data-ld-theme="crimson-duo">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>主题编辑器与伙伴浏览器验证</title>
+    <link rel="stylesheet" href="../../src/styles.css">
+    <style>
+      body {
+        min-height: 100vh;
+        margin: 0;
+        padding: 32px;
+        background: #eef3f5;
+      }
+
+      .composer-container {
+        width: min(900px, calc(100vw - 64px));
+        padding: 20px;
+        background: #fff;
+      }
+
+      .d-editor-container {
+        display: flex;
+      }
+
+      .d-editor-textarea-wrapper,
+      .d-editor-preview-wrapper {
+        min-height: 260px;
+      }
+
+      .d-editor-input {
+        box-sizing: border-box;
+        width: 100%;
+        min-height: 210px;
+        resize: none;
+      }
+
+      #ld-hero-companion {
+        width: 260px;
+      }
+    </style>
+  </head>
+  <body>
+    <main class="composer-container">
+      <section class="reply-area">
+        <div class="composer-fields">
+          <div class="d-editor-container">
+            <div class="d-editor-textarea-column">
+              <div class="d-editor-button-bar">
+                <button class="btn" type="button">B</button>
+                <button class="btn" type="button">I</button>
+              </div>
+              <div class="d-editor-textarea-wrapper">
+                <textarea
+                  class="d-editor-input"
+                  aria-label="编辑内容"
+                  placeholder="输入内容"
+                ></textarea>
+              </div>
+            </div>
+            <div class="d-editor-preview-wrapper">预览</div>
+          </div>
+        </div>
+      </section>
+    </main>
+    <img
+      id="ld-hero-companion"
+      alt="始皇伙伴动作验证"
+      src="../../assets/generated/hero-draw/v1.0.0/actions/hero-001-companion.png"
+    >
+  </body>
+</html>

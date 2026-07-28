@@ -331,6 +331,82 @@ test("个人中心和推荐列表的普通项目跟随背景强度并保留悬�
   );
 });
 
+test("发帖编辑器自适应可用宽度且个人资料栏使用轻量透明表面", () => {
+  const styles = readFileSync(
+    path.join(projectRoot, "src", "styles.css"),
+    "utf8",
+  );
+
+  assert.match(
+    styles,
+    /\.composer-container\s+:is\(\s*\.reply-area,\s*\.composer-fields,\s*\.d-editor-container\s*\)\s*\{[\s\S]*?width:\s*100%[\s\S]*?min-width:\s*0/,
+  );
+  assert.match(
+    styles,
+    /\.d-editor-container:has\(\.d-editor-input:placeholder-shown\)\s+\.d-editor-preview-wrapper\s*\{[\s\S]*?display:\s*none\s*!important/,
+  );
+  assert.match(
+    styles,
+    /\.d-editor-container:has\(\.d-editor-input:placeholder-shown\)\s+\.d-editor-textarea-wrapper\s*\{[\s\S]*?flex:\s*1\s+1\s+100%[\s\S]*?width:\s*100%/,
+  );
+  assert.match(
+    styles,
+    /\.composer-container\s+\.d-editor-input:focus-visible\s*\{[\s\S]*?outline:\s*none/,
+  );
+  assert.match(
+    styles,
+    /\.composer-container\s+:is\(\s*\.reply-area,\s*\.composer-fields,\s*\.d-editor-container,\s*\.d-editor-textarea-column,\s*\.d-editor-textarea-wrapper,\s*\.d-editor-preview-wrapper,\s*\.d-editor-input,\s*\.d-editor-button-bar,\s*\.d-editor-button-bar\s+\.btn\s*\)\s*\{[\s\S]*?border:\s*0\s*!important[\s\S]*?outline:\s*0\s*!important[\s\S]*?box-shadow:\s*none\s*!important/,
+  );
+  assert.match(
+    styles,
+    /\.composer-container\s+:is\(\s*\.reply-area,\s*\.composer-fields,\s*\.d-editor-container,\s*\.d-editor-textarea-wrapper,\s*\.d-editor-preview-wrapper\s*\):focus-within\s*\{[\s\S]*?outline:\s*none\s*!important[\s\S]*?box-shadow:\s*none\s*!important/,
+  );
+  assert.match(
+    styles,
+    /:is\(\s*\.chat-composer,\s*\.chat-composer-container,\s*\.chat-composer__wrapper,\s*\.chat-composer__input-container,\s*\.chat-message-text-area,\s*\.chat-message-text-area__container,\s*\.chat-message-text-area__input-container,\s*\.chat-message-text-area__input\s*\)\s*\{[\s\S]*?border:\s*0\s*!important[\s\S]*?outline:\s*0\s*!important[\s\S]*?box-shadow:\s*none\s*!important/,
+  );
+  assert.match(
+    styles,
+    /:is\(\s*\.search-menu,\s*\.search-menu-container,\s*\.custom-search-banner\s*\)[\s\S]*?:is\(\s*\.search-icon,\s*\.search-icon-button,\s*\.search-input\s+\.btn,\s*\.search-input\s+button\s*\)\s*\{[\s\S]*?border:\s*0\s*!important[\s\S]*?box-shadow:\s*none\s*!important/,
+  );
+  assert.match(
+    styles,
+    /\.user-main\s+\.about\s*\{[\s\S]*?background:\s*transparent\s*!important[\s\S]*?box-shadow:\s*none\s*!important/,
+  );
+  assert.match(
+    styles,
+    /\.user-main\s+\.about\s+\.details\s*\{[\s\S]*?border:\s*1px\s+solid\s+var\(--ld-border\)[\s\S]*?border-radius:\s*16px[\s\S]*?background:\s*var\(--ld-panel\)\s*!important/,
+  );
+  assert.match(
+    styles,
+    /\.user-main\s+\.about\s+\.details\s+:is\(\s*\.primary,\s*\.secondary\s*\)\s*\{[\s\S]*?background:\s*transparent\s*!important/,
+  );
+});
+
+test("桌面主题导航在窄内容区保持筛选、标签和操作的稳定顺序", () => {
+  const styles = readFileSync(
+    path.join(projectRoot, "src", "styles.css"),
+    "utf8",
+  );
+
+  assert.match(
+    styles,
+    /@media\s*\(min-width:\s*769px\)[\s\S]*?\.navigation-container\s*\{[\s\S]*?display:\s*flex\s*!important[\s\S]*?flex-flow:\s*row\s+nowrap\s*!important/,
+  );
+  assert.match(
+    styles,
+    /\.navigation-container\s*>\s*\.category-breadcrumb\s*\{[\s\S]*?order:\s*0\s*!important[\s\S]*?flex:\s*0\s+0\s+auto\s*!important/,
+  );
+  assert.match(
+    styles,
+    /\.navigation-container\s*>\s*\.nav-pills\s*\{[\s\S]*?order:\s*1\s*!important[\s\S]*?min-width:\s*0[\s\S]*?overflow-x:\s*auto\s*!important[\s\S]*?flex-wrap:\s*nowrap\s*!important/,
+  );
+  assert.match(
+    styles,
+    /\.navigation-container\s*>\s*\.navigation-controls\s*\{[\s\S]*?order:\s*2\s*!important[\s\S]*?flex:\s*0\s+0\s+auto\s*!important/,
+  );
+});
+
 test("主题统计数字不显示按钮描边且自定义文字颜色覆盖正文令牌", () => {
   const styles = readFileSync(
     path.join(projectRoot, "src", "styles.css"),
@@ -378,7 +454,7 @@ test("边框层级隐藏被动控件描边并突出主操作", () => {
   assert.doesNotMatch(styles, /transition:\s*all\b/);
 });
 
-test("英雄伙伴保持在视口内且减少动态效果时停止漂浮", () => {
+test("英雄伙伴不使用整图假动作并保留拖动", () => {
   const styles = readFileSync(
     path.join(projectRoot, "src", "styles.css"),
     "utf8",
@@ -386,10 +462,33 @@ test("英雄伙伴保持在视口内且减少动态效果时停止漂浮", () =>
 
   assert.match(styles, /#ld-hero-companion\s*\{[\s\S]*?position:\s*fixed/);
   assert.match(styles, /#ld-hero-companion\s*\{[\s\S]*?max-height:\s*min\(/);
-  assert.match(styles, /animation:\s*ld-hero-float/);
+  assert.match(styles, /#ld-hero-companion\s*\{[\s\S]*?pointer-events:\s*auto/);
+  assert.match(styles, /#ld-hero-companion\s*\{[\s\S]*?touch-action:\s*none/);
+  assert.match(styles, /#ld-hero-companion\s*\{[\s\S]*?cursor:\s*grab/);
   assert.match(
     styles,
-    /@media\s*\(prefers-reduced-motion:\s*reduce\)[\s\S]*?#ld-hero-companion[\s\S]*?animation:\s*none\s*!important/,
+    /#ld-hero-companion\[data-ld-dragging="true"\][\s\S]*?cursor:\s*grabbing/,
+  );
+  assert.match(
+    styles,
+    /#ld-hero-companion\s*\{[\s\S]*?animation:\s*none\s*!important/,
+  );
+  assert.doesNotMatch(styles, /data-ld-action|@keyframes\s+ld-hero-float|@keyframes\s+ld-companion-/);
+  assert.match(
+    styles,
+    /@media\s*\(prefers-reduced-motion:\s*reduce\)[\s\S]*?animation-duration:\s*0\.01ms\s*!important[\s\S]*?animation-iteration-count:\s*1\s*!important/,
+  );
+});
+
+test("英雄素材重建时保留始皇 APNG 姿态帧", () => {
+  const prepareScript = readFileSync(
+    path.join(projectRoot, "scripts", "prepare-hero-assets.ps1"),
+    "utf8",
+  );
+
+  assert.match(
+    prepareScript,
+    /hero-001-companion\.png[\s\S]*?Test-Path[\s\S]*?Copy-Item[\s\S]*?continue/,
   );
 });
 
