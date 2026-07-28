@@ -680,6 +680,137 @@ html[data-ld-theme] :is(
   backdrop-filter: blur(var(--ld-panel-blur)) saturate(112%);
 }
 
+html[data-ld-theme] .user-main .about {
+  overflow: visible;
+  border: 0;
+  background: transparent !important;
+  box-shadow: none !important;
+  backdrop-filter: none;
+}
+
+html[data-ld-theme] .user-main .about .details {
+  overflow: hidden;
+  border: 1px solid var(--ld-border);
+  border-radius: 16px;
+  background: var(--ld-panel) !important;
+  box-shadow: var(--ld-shadow);
+  backdrop-filter: blur(var(--ld-panel-blur)) saturate(112%);
+}
+
+html[data-ld-theme] .user-main .about .details :is(
+    .primary,
+    .secondary
+  ) {
+  background: transparent !important;
+}
+
+html[data-ld-theme] .composer-container :is(
+    .reply-area,
+    .composer-fields,
+    .d-editor-container
+  ) {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  max-width: none;
+}
+
+html[data-ld-theme] .composer-container .d-editor-container {
+  gap: clamp(10px, 1.2vw, 18px);
+}
+
+html[data-ld-theme] .composer-container :is(
+    .reply-area,
+    .composer-fields,
+    .d-editor-container,
+    .d-editor-textarea-column,
+    .d-editor-textarea-wrapper,
+    .d-editor-preview-wrapper,
+    .d-editor-input,
+    .d-editor-button-bar,
+    .d-editor-button-bar .btn
+  ) {
+  border: 0 !important;
+  outline: 0 !important;
+  box-shadow: none !important;
+}
+
+html[data-ld-theme] .composer-container :is(
+    .reply-area,
+    .composer-fields,
+    .d-editor-container,
+    .d-editor-textarea-wrapper,
+    .d-editor-preview-wrapper
+  ):focus-within {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+html[data-ld-theme] .composer-container :is(
+    .d-editor-textarea-wrapper,
+    .d-editor-preview-wrapper
+  ) {
+  min-width: 0;
+  overflow: hidden;
+  border-radius: 12px;
+  background: var(--ld-panel-soft);
+}
+
+html[data-ld-theme] .composer-container .d-editor-textarea-wrapper {
+  flex: 1 1 58%;
+}
+
+html[data-ld-theme] .composer-container .d-editor-preview-wrapper {
+  flex: 1 1 42%;
+}
+
+html[data-ld-theme] .composer-container .d-editor-input {
+  background: transparent !important;
+}
+
+html[data-ld-theme] .composer-container .d-editor-input:focus-visible {
+  outline: none !important;
+}
+
+html[data-ld-theme]
+  .composer-container
+  .d-editor-container:has(.d-editor-input:placeholder-shown)
+  .d-editor-textarea-wrapper {
+  flex: 1 1 100% !important;
+  width: 100% !important;
+  max-width: none !important;
+}
+
+html[data-ld-theme]
+  .composer-container
+  .d-editor-container:has(.d-editor-input:placeholder-shown)
+  .d-editor-preview-wrapper {
+  display: none !important;
+}
+
+html[data-ld-theme] :is(
+    .chat-composer,
+    .chat-composer-container,
+    .chat-composer__wrapper,
+    .chat-composer__input-container,
+    .chat-message-text-area,
+    .chat-message-text-area__container,
+    .chat-message-text-area__input-container,
+    .chat-message-text-area__input
+  ) {
+  border: 0 !important;
+  outline: 0 !important;
+  box-shadow: none !important;
+}
+
+html[data-ld-theme] :is(
+    .chat-message-text-area__input,
+    .chat-composer__input,
+    .chat-composer textarea
+  ) {
+  background: transparent !important;
+}
+
 html[data-ld-theme]
   .user-stream
   :is(.item, .user-stream-item):not(.moderator-action, .deleted) {
@@ -769,6 +900,48 @@ html[data-ld-theme] :is(
   ) {
   background: var(--ld-panel-soft);
   color: var(--ld-accent);
+}
+
+@media (min-width: 769px) {
+  html[data-ld-theme] .navigation-container {
+    display: flex !important;
+    flex-flow: row nowrap !important;
+    align-items: center !important;
+    gap: 8px;
+    min-width: 0;
+  }
+
+  html[data-ld-theme] .navigation-container > .category-breadcrumb {
+    order: 0 !important;
+    flex: 0 0 auto !important;
+    margin: 0 !important;
+  }
+
+  html[data-ld-theme] .navigation-container > .nav-pills {
+    order: 1 !important;
+    flex: 1 1 auto !important;
+    display: flex !important;
+    min-width: 0;
+    max-width: 100%;
+    overflow-x: auto !important;
+    overflow-y: hidden;
+    flex-wrap: nowrap !important;
+    overscroll-behavior-inline: contain;
+    scrollbar-width: none;
+  }
+
+  html[data-ld-theme] .navigation-container .nav-pills::-webkit-scrollbar {
+    display: none;
+  }
+
+  html[data-ld-theme] .navigation-container > .nav-pills > li {
+    flex: 0 0 auto;
+  }
+
+  html[data-ld-theme] .navigation-container > .navigation-controls {
+    order: 2 !important;
+    flex: 0 0 auto !important;
+  }
 }
 
 html[data-ld-theme] :is(.btn, .select-kit-header, input, textarea) {
@@ -878,6 +1051,15 @@ html[data-ld-theme] :is(.search-menu, .search-menu-container):focus-within {
   box-shadow:
     0 2px 0 var(--ld-accent),
     0 8px 22px color-mix(in srgb, var(--ld-accent) 12%, transparent);
+}
+
+html[data-ld-theme]
+  :is(.search-menu, .search-menu-container, .custom-search-banner)
+  :is(.search-icon, .search-icon-button, .search-input .btn, .search-input button) {
+  border: 0 !important;
+  outline: 0 !important;
+  box-shadow: none !important;
+  background: transparent !important;
 }
 
 html[data-ld-theme] .topic-map :is(.summarize, .summarize-topic) {
@@ -1132,10 +1314,26 @@ html[data-ld-theme] :is(
   max-height: min(34vh, 280px);
   object-fit: contain;
   object-position: center bottom;
-  pointer-events: none;
+  pointer-events: auto;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-drag: none;
+  cursor: grab;
   filter: drop-shadow(0 12px 20px rgb(0 0 0 / 22%));
   transform-origin: center bottom;
-  animation: ld-hero-float 5.6s ease-in-out infinite;
+  animation: none !important;
+}
+
+#ld-hero-companion[data-ld-dragging="true"] {
+  cursor: grabbing;
+  filter: drop-shadow(0 16px 26px rgb(0 0 0 / 30%));
+  animation: none;
+}
+
+#ld-hero-companion:focus-visible {
+  outline: 3px solid var(--ld-accent);
+  outline-offset: 4px;
+  border-radius: 18px;
 }
 
 #ld-hero-companion[hidden] {
@@ -1578,16 +1776,6 @@ html[data-ld-theme] :is(
   }
 }
 
-@keyframes ld-hero-float {
-  0%,
-  100% {
-    transform: translate3d(0, 0, 0) rotate(-0.6deg);
-  }
-  50% {
-    transform: translate3d(0, -10px, 0) rotate(0.8deg);
-  }
-}
-
 @media (max-width: 768px) {
   html[data-ld-theme] {
     --ld-post-inline-gutter: 10px;
@@ -1641,10 +1829,6 @@ html[data-ld-theme] :is(
 
   #ld-theme-suite-media {
     display: none !important;
-  }
-
-  #ld-hero-companion {
-    animation: none !important;
   }
 }
 
