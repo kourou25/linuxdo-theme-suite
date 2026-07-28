@@ -114,6 +114,12 @@ pwsh -NoProfile -File scripts/package-release.ps1 -Version 1.0.0
 - 页面地址匹配 `https://linux.do/*`；
 - 移动端保留基础主题与面板适配，宽屏人物构图以桌面端为主要显示环境。
 
+## 🌟 特别鸣谢
+
+感谢 [LINUX DO](https://linux.do/) 社区提供开放、友善、专业的技术交流环境。本项目面向 LINUX DO 页面使用，并在社区用户的实际使用与反馈中持续完善。
+
+前往 [LINUX DO 社区](https://linux.do/)。
+
 ## 许可证与素材
 
 源代码、构建脚本和原创文档使用 [MIT License](LICENSE)。
