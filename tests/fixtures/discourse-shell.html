@@ -1,0 +1,526 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>LINUX DO Theme Suite 本地视觉夹具</title>
+    <link rel="stylesheet" href="./runtime-styles.css">
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family:
+          "Microsoft YaHei UI",
+          "Noto Sans SC",
+          sans-serif;
+      }
+
+      button,
+      input {
+        font: inherit;
+      }
+
+      .d-header {
+        position: sticky;
+        z-index: 20;
+        top: 0;
+        display: flex;
+        height: 62px;
+        padding: 0 24px;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      .d-header a {
+        color: inherit;
+        font-weight: 800;
+        letter-spacing: 0.02em;
+        text-decoration: none;
+      }
+
+      .d-header nav {
+        display: flex;
+        gap: 10px;
+      }
+
+      .app-shell {
+        display: grid;
+        min-height: calc(100vh - 62px);
+        grid-template-columns: 250px minmax(0, 1fr);
+      }
+
+      .sidebar-wrapper {
+        padding: 28px 16px;
+      }
+
+      .sidebar-section-link-wrapper {
+        margin-bottom: 5px;
+      }
+
+      .sidebar-section-link {
+        display: block;
+        padding: 10px 12px;
+        border-radius: 9px;
+        color: inherit;
+        text-decoration: none;
+      }
+
+      #main-outlet {
+        width: min(1080px, calc(100% - 40px));
+        margin: 0 auto;
+        padding: 72px 0 96px;
+      }
+
+      .page-intro {
+        display: flex;
+        min-height: 188px;
+        align-items: flex-end;
+        justify-content: space-between;
+        gap: 24px;
+      }
+
+      .page-intro h1 {
+        max-width: 720px;
+        margin: 0 0 10px;
+        font-family:
+          "Segoe UI Variable Display",
+          "Microsoft YaHei UI",
+          sans-serif;
+        font-size: clamp(30px, 4vw, 54px);
+        line-height: 1.03;
+        letter-spacing: -0.035em;
+      }
+
+      .page-intro p {
+        max-width: 620px;
+        margin: 0;
+        color: var(--ld-muted);
+        line-height: 1.75;
+      }
+
+      .navigation-container {
+        display: flex;
+        margin: 34px 0 16px;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+
+      .btn {
+        padding: 9px 14px;
+        border: 1px solid;
+        border-radius: 9px;
+        cursor: pointer;
+      }
+
+      .topic-list {
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      .topic-list-item {
+        background-color: var(--topic-list-item-background-color, #fff);
+      }
+
+      .topic-list th,
+      .topic-list td {
+        padding: 15px 16px;
+        text-align: left;
+      }
+
+      .topic-list th {
+        color: var(--ld-muted);
+        font-size: 12px;
+        font-weight: 600;
+      }
+
+      .topic-list-item-title {
+        color: inherit;
+        font-weight: 700;
+        text-decoration: none;
+      }
+
+      .topic-list .posts,
+      .topic-list .views,
+      .topic-list .activity {
+        width: 88px;
+        text-align: right;
+      }
+
+      .topic-post {
+        margin-top: 0;
+      }
+
+      .topic-post article {
+        padding-block: 0;
+      }
+
+      .topic-post .row {
+        display: grid;
+        grid-template-columns: 48px minmax(0, 1fr);
+        column-gap: 12px;
+      }
+
+      .topic-avatar {
+        padding-top: 22px;
+        border-top: 1px solid #bcc5c8;
+      }
+
+      .avatar-placeholder {
+        display: grid;
+        width: 46px;
+        height: 46px;
+        place-items: center;
+        border-radius: 50%;
+        background: linear-gradient(145deg, var(--ld-accent), var(--ld-accent-strong));
+        color: white;
+        font-size: 22px;
+      }
+
+      .topic-body {
+        min-width: 0;
+        padding: 18px 0 20px;
+        border-top: 1px solid #bcc5c8;
+      }
+
+      .post-meta {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        color: var(--ld-muted);
+      }
+
+      .post-meta strong {
+        color: var(--primary);
+      }
+
+      .topic-post blockquote {
+        margin: 15px 0;
+        padding: 13px 16px;
+        border-left: 4px solid var(--ld-control-border);
+        background: var(--ld-panel-soft);
+      }
+
+      .topic-post p {
+        line-height: 1.85;
+      }
+
+      .user-content,
+      .more-topics__container {
+        margin-top: 22px;
+      }
+
+      .user-stream {
+        margin: 0;
+        padding: 0;
+      }
+
+      .user-stream .item,
+      .user-stream .user-stream-item {
+        padding: 18px 16px;
+        list-style: none;
+        background: var(--d-content-background, #fff);
+        border-bottom: 1px solid #d8dde0;
+      }
+
+      .user-stream .excerpt {
+        margin: 8px 0 0;
+      }
+
+      .post-controls {
+        display: flex;
+        justify-content: flex-end;
+        gap: 6px;
+        margin-top: 18px;
+      }
+
+      .menu-panel {
+        position: fixed;
+        z-index: 30;
+        top: 70px;
+        right: 24px;
+        width: min(340px, calc(100vw - 48px));
+        overflow: hidden;
+        border: 1px solid #9bbfcb;
+        border-radius: 12px;
+      }
+
+      .quick-access-panel {
+        padding: 8px;
+        background: #cdefff;
+        color: white;
+      }
+
+      .quick-access-panel h2 {
+        margin: 8px 10px 6px;
+        font-size: 15px;
+      }
+
+      .quick-access-panel ul {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+      }
+
+      .quick-access-panel li {
+        padding: 10px;
+        border-bottom: 1px solid #a8d1df;
+      }
+
+      .quick-access-panel a {
+        color: white;
+        text-decoration: none;
+      }
+
+      .quick-access-panel .item-description {
+        display: block;
+        margin-top: 4px;
+        color: white;
+        font-size: 13px;
+      }
+
+      @media (max-width: 768px) {
+        .d-header {
+          padding: 0 14px;
+        }
+
+        .d-header nav .btn:first-child {
+          display: none;
+        }
+
+        .app-shell {
+          display: block;
+        }
+
+        .sidebar-wrapper {
+          display: none;
+        }
+
+        #main-outlet {
+          width: min(100% - 24px, 680px);
+          padding-top: 44px;
+        }
+
+        .page-intro {
+          min-height: 132px;
+        }
+
+        .topic-list .views,
+        .topic-list .activity {
+          display: none;
+        }
+
+        .topic-list th,
+        .topic-list td {
+          padding: 13px 12px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="d-header">
+      <a href="#" aria-label="LINUX DO Theme Suite 测试首页">LINUX DO / THEME LAB</a>
+      <nav aria-label="测试操作">
+        <button class="btn" type="button">搜索</button>
+        <button class="btn" type="button">登录</button>
+      </nav>
+    </header>
+
+    <div class="app-shell">
+      <aside class="sidebar-wrapper" aria-label="侧边导航">
+        <div class="sidebar-section-link-wrapper">
+          <a class="sidebar-section-link active" href="#">最新话题</a>
+        </div>
+        <div class="sidebar-section-link-wrapper">
+          <a class="sidebar-section-link" href="#">未读</a>
+        </div>
+        <div class="sidebar-section-link-wrapper">
+          <a class="sidebar-section-link" href="#">技术交流</a>
+        </div>
+        <div class="sidebar-section-link-wrapper">
+          <a class="sidebar-section-link" href="#">资源荟萃</a>
+        </div>
+      </aside>
+
+      <main id="main-outlet">
+        <section class="page-intro">
+          <div>
+            <h1>新的理想型社区，也可以拥有你的视觉性格。</h1>
+            <p>
+              这是一个本地 Discourse 结构夹具，用于检查主题背景、内容层级、文本对比度、
+              悬停状态和移动端表现。
+            </p>
+          </div>
+        </section>
+
+        <nav class="navigation-container" aria-label="话题筛选">
+          <button class="btn" type="button">最新</button>
+          <button class="btn" type="button">热门</button>
+          <button class="btn" type="button">分类</button>
+        </nav>
+
+        <table class="topic-list">
+          <thead>
+            <tr>
+              <th>话题</th>
+              <th class="posts">回复</th>
+              <th class="views">浏览</th>
+              <th class="activity">活动</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="topic-list-item">
+              <td>
+                <a class="topic-list-item-title" href="#">如何构建没有外部依赖的油猴主题脚本</a>
+              </td>
+              <td class="posts">42</td>
+              <td class="views">1.8k</td>
+              <td class="activity">3 分钟</td>
+            </tr>
+            <tr class="topic-list-item">
+              <td>
+                <a class="topic-list-item-title" href="#">分享一套适合长时间阅读的浅色配色</a>
+              </td>
+              <td class="posts">18</td>
+              <td class="views">926</td>
+              <td class="activity">16 分钟</td>
+            </tr>
+            <tr class="topic-list-item">
+              <td>
+                <a class="topic-list-item-title" href="#">Discourse 单页导航下的脚本状态维护</a>
+              </td>
+              <td class="posts">31</td>
+              <td class="views">1.2k</td>
+              <td class="activity">1 小时</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <section class="topic-post">
+          <article>
+            <div class="row">
+              <div class="topic-avatar" aria-hidden="true">
+                <span class="avatar-placeholder">Y</span>
+              </div>
+              <div class="topic-body">
+                <header class="post-meta">
+                  <strong>yuan799</strong>
+                  <span>7 分钟</span>
+                </header>
+                <p>这是一个用于检查评论卡片左右留白和文字对比度的真实结构近似。</p>
+                <blockquote>
+                  <strong>上一条回复</strong>
+                  <p>引用块需要与正文对齐，同时不能挤压头像槽位。</p>
+                </blockquote>
+                <p>评论正文、引用内容和操作按钮都应该与左侧边框保持舒适距离。</p>
+                <footer class="post-controls">
+                  <button class="btn" type="button">链接</button>
+                  <button class="btn" type="button">回复</button>
+                </footer>
+              </div>
+            </div>
+          </article>
+        </section>
+
+        <section class="topic-post">
+          <article>
+            <div class="row">
+              <div class="topic-avatar" aria-hidden="true">
+                <span class="avatar-placeholder">G</span>
+              </div>
+              <div class="topic-body">
+                <header class="post-meta">
+                  <strong>Genius Theory</strong>
+                  <span>5 分钟</span>
+                </header>
+                <p>第二张评论卡片用于检查卡片之间是否留有呼吸感，以及左上角是否还会出现接缝。</p>
+                <footer class="post-controls">
+                  <button class="btn" type="button">收藏</button>
+                  <button class="btn" type="button">回复</button>
+                </footer>
+              </div>
+            </div>
+          </article>
+        </section>
+
+        <section class="user-content" aria-label="个人中心动态">
+          <h2>个人中心动态</h2>
+          <ul class="user-stream">
+            <li class="item">
+              <strong>【第六期】连更六期，我也是神了</strong>
+              <p class="excerpt">尝试让 GPT 给我生成一个站点的 MEME。</p>
+            </li>
+            <li class="user-stream-item">
+              <strong>Loop 工程真的有那么神吗？</strong>
+              <p class="excerpt">个人中心里的普通活动项目应该跟随背景强度。</p>
+            </li>
+          </ul>
+        </section>
+
+        <section class="more-topics__container" aria-label="下方推荐">
+          <h2>下方推荐</h2>
+          <table class="topic-list more-topics__list">
+            <tbody class="topic-list-body">
+              <tr class="topic-list-item">
+                <td>
+                  <a class="topic-list-item-title" href="#">为什么不同浏览器打开效果不一样</a>
+                </td>
+                <td class="posts">2</td>
+                <td class="views">33</td>
+                <td class="activity">1 分钟</td>
+              </tr>
+              <tr class="topic-list-item visited">
+                <td>
+                  <a class="topic-list-item-title" href="#">干问 token plan 支持教育优惠</a>
+                </td>
+                <td class="posts">6</td>
+                <td class="views">251</td>
+                <td class="activity">1 分钟</td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+      </main>
+    </div>
+
+    <aside class="menu-panel" aria-label="消息测试面板">
+      <div id="quick-access-notifications" class="quick-access-panel">
+        <h2>通知与消息</h2>
+        <ul>
+          <li class="notification-list-item unread">
+            <a class="notification-link" href="#">
+              <span class="item-label">huishe ng 回复了你的话题</span>
+              <span class="item-description">刚刚 · 查看最新评论内容</span>
+            </a>
+          </li>
+          <li class="notification-list-item">
+            <a class="notification-link" href="#">
+              <span class="item-label">luqiaoyu 赞了你的帖子</span>
+              <span class="item-description">6 分钟前</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </aside>
+
+    <script>
+      window.GM_getValue = (key, fallback) => {
+        const value = localStorage.getItem(`fixture:${key}`);
+        return value === null ? fallback : JSON.parse(value);
+      };
+      window.GM_setValue = (key, value) => {
+        localStorage.setItem(`fixture:${key}`, JSON.stringify(value));
+      };
+      window.GM_addStyle = (styles) => {
+        const element = document.createElement("style");
+        element.dataset.fixtureUserscript = "true";
+        element.textContent = styles;
+        document.head.append(element);
+      };
+    </script>
+    <script src="../../dist/linuxdo-theme-suite.user.js"></script>
+  </body>
+</html>

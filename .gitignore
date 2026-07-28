@@ -1,0 +1,49 @@
+# 依赖与构建输出
+node_modules/
+dist/
+deliverables/
+*.zip
+
+# 原始媒体、完整素材包与处理工作区
+assets/source/
+assets/media-pack/
+assets/generated/*
+
+# 构建所需的运行时压缩图
+!assets/generated/runtime/
+assets/generated/runtime/*
+!assets/generated/runtime/v0.6.0/
+assets/generated/runtime/v0.6.0/*
+!assets/generated/runtime/v0.6.0/*.jpg
+
+!assets/generated/wallpaper-expansion/
+assets/generated/wallpaper-expansion/*
+!assets/generated/wallpaper-expansion/v0.8.0/
+assets/generated/wallpaper-expansion/v0.8.0/*
+!assets/generated/wallpaper-expansion/v0.8.0/runtime/
+assets/generated/wallpaper-expansion/v0.8.0/runtime/*
+!assets/generated/wallpaper-expansion/v0.8.0/runtime/images/
+assets/generated/wallpaper-expansion/v0.8.0/runtime/images/*
+!assets/generated/wallpaper-expansion/v0.8.0/runtime/images/*.jpg
+
+# 内部记录、历史归档与本地工具
+archive/
+research/
+tools/
+docs/decision-records/
+docs/superpowers/
+docs/assets/
+tests/evidence/
+tests/plans/
+tests/cases/
+
+# 构建生成的测试夹具与本地预览
+tests/fixtures/runtime-styles.css
+mont.jpg
+
+# 编辑器与系统文件
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.log
