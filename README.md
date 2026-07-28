@@ -1,6 +1,6 @@
 # LINUX DO Theme Suite
 
-LINUX DO Theme Suite 是适用于 `https://linux.do/*` 的本地油猴主题工具。v0.9.1 包含 41 套常规主题、动态背景、本地素材导入、随机英雄背景与透明伙伴，以及背景强度、主题轮播和文字颜色设置。
+LINUX DO Theme Suite 是适用于 `https://linux.do/*` 的本地油猴主题工具。V1 包含 41 套常规主题、动态背景、本地素材导入、随机英雄背景与透明伙伴，以及背景强度、主题轮播和文字颜色设置。
 
 所有设置和导入素材均保存在当前浏览器，不读取账号凭据，也不会把图片、视频或站内内容上传到服务器。
 
@@ -30,28 +30,31 @@ LINUX DO Theme Suite 是适用于 `https://linux.do/*` 的本地油猴主题工�
 |---|---|
 | ![高背景强度](docs/images/background-intensity-high.webp) | ![中等背景强度](docs/images/background-intensity-medium.webp) |
 
-## 下载
+## 下载 V1
 
 | 文件 | 用途 |
 |---|---|
-| [轻量 UserScript（推荐）](https://github.com/kourou25/linuxdo-theme-suite/releases/latest/download/linuxdo-theme-suite-v0.9.1-core.user.js) | 体积小，配合统一素材包使用 |
-| [完整 UserScript](https://github.com/kourou25/linuxdo-theme-suite/releases/latest/download/linuxdo-theme-suite-v0.9.1-full.user.js) | 可选离线版，内置 41 套静态主题 |
-| [统一素材包](https://github.com/kourou25/linuxdo-theme-suite/releases/latest/download/linuxdo-theme-suite-v0.9.1-suite-pack.zip) | 动态素材、常规主题和 16 套随机英雄 |
+| [V1 新手整合包（首选）](https://github.com/kourou25/linuxdo-theme-suite/releases/latest/download/linuxdo-theme-suite-v1.0.0-starter-kit.zip) | 一次下载和解压即可获得脚本、全部素材与手册 |
+| [轻量 UserScript](https://github.com/kourou25/linuxdo-theme-suite/releases/latest/download/linuxdo-theme-suite-v1.0.0-core.user.js) | 只更新脚本时使用 |
+| [统一素材包](https://github.com/kourou25/linuxdo-theme-suite/releases/latest/download/linuxdo-theme-suite-v1.0.0-suite-pack.zip) | 只更新常规主题、动态素材和随机英雄时使用 |
+| [完整 UserScript](https://github.com/kourou25/linuxdo-theme-suite/releases/latest/download/linuxdo-theme-suite-v1.0.0-full.user.js) | 高级离线版，内置 41 套静态主题，文件较大 |
 | [操作手册](docs/操作手册.md) | 安装、更新、使用、卸载和故障处理 |
 
 全部发布文件、SHA-256 校验值和版本说明位于 [Releases](https://github.com/kourou25/linuxdo-theme-suite/releases)。
 
-推荐安装约 110 KB 的轻量脚本并导入统一素材包。完整脚本内置 41 套图片，体积超过 11 MB，油猴编辑器在粘贴或保存时可能短暂无响应。
+普通用户不要使用 GitHub 自动生成的“Source code”压缩包进行安装；该压缩包仅包含开发源码。请下载上表第一项“V1 新手整合包”。
 
 ## 安装
 
 1. 安装 Tampermonkey 或 Violentmonkey。
-2. 下载轻量 UserScript，在扩展中新建脚本并粘贴保存。
-3. 解压统一素材包。
+2. 下载并解压 `linuxdo-theme-suite-v1.0.0-starter-kit.zip`。
+3. 打开其中的 `01-安装主题脚本.user.js` 完成安装。
 4. 打开或刷新 LINUX DO，点击主题工具悬浮按钮。
-5. 点击“导入统一素材包”，选择解压后的整个目录。
+5. 点击“导入统一素材包”，选择整合包中的 `02-统一素材包` 文件夹。
 
-统一素材包必须解压后导入，并保留 `manifest.json`、`images/`、`videos/`、`backgrounds/` 和 `companions/` 的目录结构。
+整合包根目录的 `00-开始使用.txt` 包含同样的快速步骤。素材目录必须保留 `manifest.json`、`images/`、`videos/`、`backgrounds/` 和 `companions/` 的结构。
+
+需要分开更新时，可单独下载约 120 KB 的轻量脚本或统一素材包。完整脚本内置 41 套图片，体积超过 11 MB，油猴编辑器在粘贴或保存时可能短暂无响应。
 
 ## 功能
 
@@ -89,7 +92,7 @@ npm run check
 完整发布包使用以下命令生成：
 
 ```powershell
-pwsh -NoProfile -File scripts/package-release.ps1 -Version 0.9.1
+pwsh -NoProfile -File scripts/package-release.ps1 -Version 1.0.0
 ```
 
 完整媒体发布功能使用独立的原始媒体目录；Git 仓库内的运行时压缩图可直接复现 UserScript 构建。

@@ -24,7 +24,9 @@ $deliverableDir = Join-Path $projectRoot "deliverables\v$Version"
 $fullScriptName = "linuxdo-theme-suite-v$Version-full.user.js"
 $coreScriptName = "linuxdo-theme-suite-v$Version-core.user.js"
 $suitePackName = "linuxdo-theme-suite-v$Version-suite-pack.zip"
+$starterKitName = "linuxdo-theme-suite-v$Version-starter-kit.zip"
 $manualName = "LINUX-DO-Theme-Suite-v$Version-User-Guide.zh-CN.md"
+$starterKitStageDir = Join-Path $deliverableDir '.starter-kit-stage'
 
 function Reset-ProjectDirectory {
     param([Parameter(Mandatory)][string]$Path)
@@ -224,13 +226,62 @@ Copy-Item -LiteralPath (Join-Path $projectRoot 'LICENSE') `
 Copy-Item -LiteralPath (Join-Path $projectRoot 'ASSET-SOURCES.md') `
     -Destination (Join-Path $deliverableDir 'ASSET-SOURCES.md') -Force
 
+Reset-ProjectDirectory -Path $starterKitStageDir
+Copy-Item -LiteralPath (Join-Path $deliverableDir $coreScriptName) `
+    -Destination (Join-Path $starterKitStageDir '01-安装主题脚本.user.js') `
+    -Force
+Copy-Item -LiteralPath $suitePackDir `
+    -Destination (Join-Path $starterKitStageDir '02-统一素材包') `
+    -Recurse -Force
+Copy-Item -LiteralPath (Join-Path $deliverableDir $manualName) `
+    -Destination (Join-Path $starterKitStageDir '03-操作手册.md') -Force
+Copy-Item -LiteralPath (Join-Path $deliverableDir 'LICENSE') `
+    -Destination (Join-Path $starterKitStageDir 'LICENSE') -Force
+Copy-Item -LiteralPath (Join-Path $deliverableDir 'ASSET-SOURCES.md') `
+    -Destination (Join-Path $starterKitStageDir 'ASSET-SOURCES.md') -Force
+@"
+LINUX DO Theme Suite V1 开始使用
+
+本整合包只需下载和解压一次。
+
+第一步：安装脚本
+1. 浏览器先安装 Tampermonkey 或 Violentmonkey。
+2. 打开“01-安装主题脚本.user.js”。
+3. 扩展能识别 UserScript 时，点击安装；未自动识别时，在扩展中新建脚本，粘贴该文件全部内容并保存。
+
+第二步：导入全部素材
+1. 打开或刷新 https://linux.do/。
+2. 点击页面上的主题工具悬浮按钮。
+3. 点击“导入统一素材包”。
+4. 选择本整合包中的“02-统一素材包”整个文件夹。
+
+完成后可直接切换主题、调整背景强度和抽取 L 站英雄。
+详细功能、更新和卸载步骤见“03-操作手册.md”。
+"@ | Set-Content -LiteralPath (Join-Path $starterKitStageDir '00-开始使用.txt') `
+    -Encoding utf8
+Write-DirectoryHashes -Directory $starterKitStageDir
+Compress-Archive -Path (Join-Path $starterKitStageDir '*') `
+    -DestinationPath (Join-Path $deliverableDir $starterKitName) `
+    -CompressionLevel Optimal
+$starterKitStageAbsolute = [System.IO.Path]::GetFullPath($starterKitStageDir)
+$deliverableAbsolute = [System.IO.Path]::GetFullPath($deliverableDir) +
+    [System.IO.Path]::DirectorySeparatorChar
+if (-not $starterKitStageAbsolute.StartsWith(
+        $deliverableAbsolute,
+        [System.StringComparison]::OrdinalIgnoreCase
+    )) {
+    throw "拒绝清理发布目录以外的暂存路径：$starterKitStageAbsolute"
+}
+Remove-Item -LiteralPath $starterKitStageAbsolute -Recurse -Force
+
 @"
 # LINUX DO Theme Suite v$Version 发布文件
 
-- `$coreScriptName`：推荐安装的轻量油猴脚本；配合统一素材包使用。
-- `$fullScriptName`：可选离线完整脚本，内置 41 套静态主题。
-- `$suitePackName`：统一素材包，包含常规主题、动态素材和随机英雄。
-- `$manualName`：安装、更新、使用、卸载和故障处理手册。
+- $starterKitName：首选下载的新手整合包；一次解压即可获得脚本、素材和操作手册。
+- $coreScriptName：单独更新脚本时使用的轻量油猴脚本。
+- $suitePackName：单独更新素材时使用的统一素材包。
+- $fullScriptName：高级离线脚本，内置 41 套静态主题，文件较大。
+- $manualName：安装、更新、使用、卸载和故障处理手册。
 - `LICENSE`：代码许可证。
 - `ASSET-SOURCES.md`：素材来源与发布说明。
 

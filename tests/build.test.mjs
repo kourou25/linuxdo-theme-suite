@@ -425,6 +425,41 @@ test("发布脚本把主题和 16 套匿名英雄整合为单一素材包", () =
   );
 });
 
+test("V1 发布脚本生成可一次下载和一次解压的新手整合包", () => {
+  const releaseScript = readFileSync(
+    path.join(projectRoot, "scripts", "package-release.ps1"),
+    "utf8",
+  );
+
+  assert.match(
+    releaseScript,
+    /\$starterKitName\s*=\s*"linuxdo-theme-suite-v\$Version-starter-kit\.zip"/,
+  );
+  assert.match(releaseScript, /00-开始使用\.txt/);
+  assert.match(releaseScript, /01-安装主题脚本\.user\.js/);
+  assert.match(releaseScript, /02-统一素材包/);
+  assert.match(releaseScript, /03-操作手册\.md/);
+  assert.match(
+    releaseScript,
+    /Copy-Item[\s\S]*?\$suitePackDir[\s\S]*?02-统一素材包[\s\S]*?-Recurse/,
+  );
+  assert.match(
+    releaseScript,
+    /Compress-Archive[\s\S]*?\$starterKitStageDir[\s\S]*?\$starterKitName/,
+  );
+});
+
+test("发布目录说明展示真实文件名而不是 PowerShell 变量字面量", () => {
+  const releaseScript = readFileSync(
+    path.join(projectRoot, "scripts", "package-release.ps1"),
+    "utf8",
+  );
+
+  assert.doesNotMatch(releaseScript, /`\$(?:coreScriptName|fullScriptName|suitePackName|manualName)`/);
+  assert.match(releaseScript, /\$starterKitName/);
+  assert.match(releaseScript, /首选下载/);
+});
+
 test("常规壁纸扩展生成 30 套安全宽屏资源并进入统一素材包", () => {
   const preparePath = path.join(
     projectRoot,
