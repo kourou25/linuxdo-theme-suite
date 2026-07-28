@@ -147,6 +147,7 @@ test("主题应用同步 data 属性、color-scheme 与背景强度", () => {
     backgroundOpacity: 0.64,
   });
   assert.equal(root.dataset.ldTheme, "crimson-duo");
+  assert.equal(root.dataset.ldScheme, "light");
   assert.equal(root.style.colorScheme, "light");
   assert.equal(properties.get("--ld-bg-opacity"), "0.64");
 });
@@ -169,6 +170,7 @@ test("常规壁纸扩展同步调色板、安全显示模式和人物焦点", ()
   applyThemeToRoot(root, "sky-headphones", 0.78);
 
   assert.equal(root.dataset.ldPalette, "light-blue");
+  assert.equal(root.dataset.ldScheme, "light");
   assert.equal(properties.get("--ld-media-fit"), "cover");
   assert.equal(properties.get("--ld-image-position"), "center top");
   assert.equal(properties.has("--ld-bundled-hero-image"), false);
@@ -820,6 +822,8 @@ test("主题选择器挂载、打开和响应主题及强度交互", () => {
   const panel = createEventNode();
   const range = createEventNode();
   const picker = createEventNode();
+  const hideCompanionButton = createEventNode();
+  const status = createEventNode();
   const buttons = THEME_KEYS.map((key) => {
     const node = createEventNode();
     node.dataset.ldThemeOption = key;
@@ -833,6 +837,8 @@ test("主题选择器挂载、打开和响应主题及强度交互", () => {
     if (selector === ".ld-theme-picker__trigger") return trigger;
     if (selector === ".ld-theme-picker__panel") return panel;
     if (selector === "[data-ld-background-opacity]") return range;
+    if (selector === "[data-ld-hide-companion]") return hideCompanionButton;
+    if (selector === "[data-ld-media-status]") return status;
     return null;
   };
   host.querySelectorAll = () => buttons;
@@ -888,6 +894,9 @@ test("主题选择器挂载、打开和响应主题及强度交互", () => {
         disable() {
           heroActions.push("disable");
         },
+        hideCompanion() {
+          heroActions.push("hideCompanion");
+        },
       },
     }),
     host,
@@ -921,11 +930,14 @@ test("主题选择器挂载、打开和响应主题及强度交互", () => {
   });
   range.value = "0.61";
   range.dispatch("input", { target: range });
+  hideCompanionButton.dispatch("click");
 
   assert.deepEqual(actions, [
     ["theme", "crimson-duo"],
     ["opacity", "0.61"],
   ]);
-  assert.deepEqual(heroActions, ["disable"]);
+  assert.deepEqual(heroActions, ["disable", "hideCompanion"]);
+  assert.equal(status.textContent, "伙伴已关闭");
+  assert.equal(status.dataset.ldStatus, "success");
   assert.equal(buttons[0].attributes.get("aria-pressed"), "true");
 });

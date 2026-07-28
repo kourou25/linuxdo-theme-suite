@@ -9,6 +9,7 @@ import {
 const BACKGROUND_KEY = "ld-hero-background-id";
 const COMPANION_KEY = "ld-hero-companion-id";
 const ACTIVE_KEY = "ld-hero-active";
+const COMPANION_VISIBLE_KEY = "ld-hero-companion-visible";
 
 function normalizeHeroIds(value) {
   return [...new Set(Array.from(value ?? []).filter((id) => /^\d{3}$/.test(id)))]
@@ -50,6 +51,7 @@ export function createHeroManager({
   let state = {
     backgroundId: null,
     companionId: null,
+    companionVisible: false,
     availableCount: 0,
   };
 
@@ -82,17 +84,28 @@ export function createHeroManager({
     setValue(ACTIVE_KEY, Boolean(active));
   }
 
-  function releaseUrls() {
+  function persistCompanionVisible(visible) {
+    setValue(COMPANION_VISIBLE_KEY, Boolean(visible));
+  }
+
+  function releaseBackgroundUrl() {
     if (backgroundUrl) revokeObjectURL(backgroundUrl);
-    if (companionUrl) revokeObjectURL(companionUrl);
     backgroundUrl = null;
+  }
+
+  function releaseCompanionUrl() {
+    if (companionUrl) revokeObjectURL(companionUrl);
     companionUrl = null;
   }
 
-  function clearView({ removeCompanion = false } = {}) {
-    releaseUrls();
+  function clearBackgroundView() {
+    releaseBackgroundUrl();
     root.style.removeProperty("--ld-hero-draw-image");
     root.dataset.ldHeroActive = "false";
+  }
+
+  function clearCompanionView({ removeCompanion = false } = {}) {
+    releaseCompanionUrl();
     if (companion) {
       companion.removeAttribute?.("src");
       companion.src = "";
@@ -104,36 +117,64 @@ export function createHeroManager({
     }
   }
 
-  async function applySelection(backgroundId, companionId) {
+  function clearView({ removeCompanion = false } = {}) {
+    clearBackgroundView();
+    clearCompanionView({ removeCompanion });
+  }
+
+  async function applySelection(
+    backgroundId,
+    companionId,
+    {
+      activateBackground = true,
+      showCompanion = true,
+    } = {},
+  ) {
     const requestedRevision = ++revision;
     const [backgroundAsset, companionAsset] = await Promise.all([
-      getHeroAsset(backgroundId, "background"),
-      getHeroAsset(companionId, "companion"),
+      activateBackground
+        ? getHeroAsset(backgroundId, "background")
+        : Promise.resolve(null),
+      showCompanion
+        ? getHeroAsset(companionId, "companion")
+        : Promise.resolve(null),
     ]);
     if (requestedRevision !== revision) return state;
-    if (!backgroundAsset?.blob || !companionAsset?.blob) {
+    if (
+      (activateBackground && !backgroundAsset?.blob) ||
+      (showCompanion && !companionAsset?.blob)
+    ) {
       throw new Error("当前英雄素材不完整，请重新导入素材包。");
     }
 
-    await beforeActivate?.();
-    if (requestedRevision !== revision) return state;
-    const nextBackgroundUrl = createObjectURL(backgroundAsset.blob);
-    const nextCompanionUrl = createObjectURL(companionAsset.blob);
-    releaseUrls();
-    backgroundUrl = nextBackgroundUrl;
-    companionUrl = nextCompanionUrl;
-    root.style.setProperty(
-      "--ld-hero-draw-image",
-      `url("${backgroundUrl}")`,
-    );
-    root.dataset.ldHeroActive = "true";
-    persistActive(true);
-    const image = getCompanion();
-    image.src = companionUrl;
-    image.hidden = false;
+    if (activateBackground) {
+      await beforeActivate?.();
+      if (requestedRevision !== revision) return state;
+      const nextBackgroundUrl = createObjectURL(backgroundAsset.blob);
+      releaseBackgroundUrl();
+      backgroundUrl = nextBackgroundUrl;
+      root.style.setProperty(
+        "--ld-hero-draw-image",
+        `url("${backgroundUrl}")`,
+      );
+      root.dataset.ldHeroActive = "true";
+      persistActive(true);
+    }
+
+    if (showCompanion) {
+      const nextCompanionUrl = createObjectURL(companionAsset.blob);
+      releaseCompanionUrl();
+      companionUrl = nextCompanionUrl;
+      const image = getCompanion();
+      image.src = companionUrl;
+      image.hidden = false;
+      persistCompanionVisible(true);
+    }
+
     state = {
-      backgroundId,
-      companionId,
+      backgroundId: activateBackground ? backgroundId : state.backgroundId,
+      companionId: showCompanion ? companionId : state.companionId,
+      companionVisible: showCompanion ? true : state.companionVisible,
       availableCount: heroIds.length,
     };
     persistSelection(state);
@@ -159,10 +200,12 @@ export function createHeroManager({
     state = {
       backgroundId: null,
       companionId: null,
+      companionVisible: false,
       availableCount: heroIds.length,
     };
     persistSelection(state);
     persistActive(false);
+    persistCompanionVisible(false);
     clearView();
     return result;
   }
@@ -185,17 +228,29 @@ export function createHeroManager({
       state = {
         backgroundId,
         companionId,
+        companionVisible: false,
         availableCount: heroIds.length,
       };
       const active = getValue(
         ACTIVE_KEY,
         Boolean(storedBackground || storedCompanion),
       );
-      if (active === false) {
+      const companionVisible = getValue(
+        COMPANION_VISIBLE_KEY,
+        active !== false,
+      );
+      state = {
+        ...state,
+        companionVisible: companionVisible !== false,
+      };
+      if (active === false && companionVisible === false) {
         clearView();
         return { ...state };
       }
-      return applySelection(backgroundId, companionId);
+      return applySelection(backgroundId, companionId, {
+        activateBackground: active !== false,
+        showCompanion: companionVisible !== false,
+      });
     },
     async drawAll() {
       await refreshIds();
@@ -205,7 +260,10 @@ export function createHeroManager({
           ? state.backgroundId
           : null;
       const heroId = pickHeroId(heroIds, random, current);
-      return applySelection(heroId, heroId);
+      return applySelection(heroId, heroId, {
+        activateBackground: true,
+        showCompanion: true,
+      });
     },
     async drawBackground() {
       await refreshIds();
@@ -218,7 +276,10 @@ export function createHeroManager({
       const companionId = heroIds.includes(state.companionId)
         ? state.companionId
         : heroIds[0];
-      return applySelection(backgroundId, companionId);
+      return applySelection(backgroundId, companionId, {
+        activateBackground: true,
+        showCompanion: false,
+      });
     },
     async drawCompanion() {
       await refreshIds();
@@ -231,7 +292,10 @@ export function createHeroManager({
       const backgroundId = heroIds.includes(state.backgroundId)
         ? state.backgroundId
         : heroIds[0];
-      return applySelection(backgroundId, companionId);
+      return applySelection(backgroundId, companionId, {
+        activateBackground: false,
+        showCompanion: true,
+      });
     },
     async importFiles(files) {
       const pack = await parseHeroPackFiles(files);
@@ -245,20 +309,32 @@ export function createHeroManager({
       state = {
         backgroundId: null,
         companionId: null,
+        companionVisible: false,
         availableCount: 0,
       };
       persistSelection(state);
       persistActive(false);
+      persistCompanionVisible(false);
       clearView({ removeCompanion: true });
     },
     disable() {
       revision += 1;
       persistActive(false);
-      clearView();
+      clearBackgroundView();
+      return { ...state };
+    },
+    hideCompanion() {
+      revision += 1;
+      persistCompanionVisible(false);
+      clearCompanionView();
+      state = {
+        ...state,
+        companionVisible: false,
+      };
       return { ...state };
     },
     maintain() {
-      if (!companionUrl || root.dataset.ldHeroActive !== "true") return;
+      if (!companionUrl || !state.companionVisible) return;
       const image = getCompanion();
       if (image.src !== companionUrl) image.src = companionUrl;
       image.hidden = false;

@@ -21,6 +21,9 @@ html[data-ld-theme] {
   --ld-border: rgb(42 59 64 / 10%);
   --ld-divider: rgb(42 59 64 / 9%);
   --ld-control-border: rgb(42 59 64 / 18%);
+  --ld-chip-bg: rgb(var(--ld-panel-strong-rgb) / 0.9);
+  --ld-chip-text: var(--primary);
+  --ld-chip-border: var(--ld-control-border);
   --ld-post-inline-gutter: clamp(14px, 1.35vw, 22px);
   --ld-accent: #a93642;
   --ld-accent-strong: #2f6f78;
@@ -475,6 +478,9 @@ html:is(
   --ld-border: rgb(220 233 237 / 11%);
   --ld-divider: rgb(220 233 237 / 9%);
   --ld-control-border: rgb(220 233 237 / 22%);
+  --ld-chip-bg: rgb(var(--ld-panel-soft-rgb) / 0.94);
+  --ld-chip-text: #f2f5f6;
+  --ld-chip-border: rgb(220 233 237 / 24%);
   --ld-muted: #b6c2c6;
   --ld-shadow: 0 22px 58px rgb(0 0 0 / 28%);
   color-scheme: dark;
@@ -921,6 +927,121 @@ html[data-ld-theme] :is(
   color: var(--ld-muted);
 }
 
+html:is(
+    [data-ld-scheme="dark"],
+    [data-ld-palette="dark-blue"],
+    [data-ld-palette="dark-neutral"],
+    [data-ld-palette="dark-amber"],
+    [data-ld-palette="dark-red"],
+    [data-ld-palette="dark-teal"]
+  )
+  :is(
+    .topic-map__user,
+    .topic-map__participant,
+    .topic-map .participants > a,
+    .topic-map .participants .user,
+    .topic-map .poster,
+    .discourse-reactions-reaction,
+    .discourse-reactions-reaction-user,
+    .discourse-reactions-users .user,
+    .discourse-reactions-list .user-list,
+    .discourse-reactions-state-panel,
+    .post-reactions .user,
+    .badge-category,
+    .discourse-tag
+  ) {
+  border-color: var(--ld-chip-border) !important;
+  background: var(--ld-chip-bg) !important;
+  color: var(--ld-chip-text) !important;
+  box-shadow: none !important;
+}
+
+html:is(
+    [data-ld-scheme="dark"],
+    [data-ld-palette="dark-blue"],
+    [data-ld-palette="dark-neutral"],
+    [data-ld-palette="dark-amber"],
+    [data-ld-palette="dark-red"],
+    [data-ld-palette="dark-teal"]
+  )
+  :is(
+    .topic-map__user,
+    .topic-map__participant,
+    .topic-map .participants,
+    .discourse-reactions-reaction,
+    .discourse-reactions-reaction-user,
+    .discourse-reactions-users,
+    .discourse-reactions-list .user-list,
+    .discourse-reactions-state-panel,
+    .post-reactions,
+    .badge-category,
+    .discourse-tag
+  )
+  :is(a, span, .username, .name, .user-title) {
+  color: inherit !important;
+}
+
+html:is(
+    [data-ld-scheme="dark"],
+    [data-ld-palette="dark-blue"],
+    [data-ld-palette="dark-neutral"],
+    [data-ld-palette="dark-amber"],
+    [data-ld-palette="dark-red"],
+    [data-ld-palette="dark-teal"]
+  )
+  .discourse-reactions-state-panel
+  :is(.container, .counters, .users, .list) {
+  background: transparent !important;
+  color: var(--ld-chip-text) !important;
+}
+
+html:is(
+    [data-ld-scheme="dark"],
+    [data-ld-palette="dark-blue"],
+    [data-ld-palette="dark-neutral"],
+    [data-ld-palette="dark-amber"],
+    [data-ld-palette="dark-red"],
+    [data-ld-palette="dark-teal"]
+  )
+  .discourse-reactions-state-panel-reaction {
+  border-color: var(--ld-divider) !important;
+  background: transparent !important;
+  color: var(--ld-chip-text) !important;
+}
+
+html:is(
+    [data-ld-scheme="dark"],
+    [data-ld-palette="dark-blue"],
+    [data-ld-palette="dark-neutral"],
+    [data-ld-palette="dark-amber"],
+    [data-ld-palette="dark-red"],
+    [data-ld-palette="dark-teal"]
+  )
+  .discourse-reactions-state-panel-reaction
+  .show-users {
+  border-color: var(--ld-chip-border) !important;
+  background: var(--ld-chip-bg) !important;
+  color: var(--ld-chip-text) !important;
+}
+
+html:is(
+    [data-ld-scheme="dark"],
+    [data-ld-palette="dark-blue"],
+    [data-ld-palette="dark-neutral"],
+    [data-ld-palette="dark-amber"],
+    [data-ld-palette="dark-red"],
+    [data-ld-palette="dark-teal"]
+  )
+  :is(
+    .names .username,
+    .names .user-title,
+    .topic-meta-data,
+    .post-info,
+    .relative-date
+  ) {
+  color: var(--primary-high) !important;
+}
+
 html[data-ld-theme]
   .topic-map__stats
   :is(.topic-map__stat, .fk-d-menu__trigger) {
@@ -1090,20 +1211,21 @@ html[data-ld-theme] :is(
   right: 0;
   bottom: 60px;
   display: grid;
+  gap: 10px;
   grid-template-rows: auto minmax(150px, 1fr) auto auto auto auto auto;
   width: min(344px, calc(100vw - 24px));
   height: min(690px, calc(100vh - 32px));
-  padding: 14px;
+  padding: 12px;
   border: 1px solid color-mix(
     in srgb,
     var(--ld-control-border) 76%,
     var(--ld-accent)
   );
-  border-radius: 18px;
+  border-radius: 22px;
   background: rgb(var(--ld-panel-strong-rgb) / 0.96);
   box-shadow:
-    0 24px 70px rgb(15 25 30 / 20%),
-    0 3px 12px rgb(15 25 30 / 8%);
+    0 24px 64px rgb(15 25 30 / 18%),
+    0 4px 14px rgb(15 25 30 / 9%);
   backdrop-filter: blur(18px) saturate(128%);
   transform-origin: right bottom;
   animation: ld-picker-enter 160ms ease-out both;
@@ -1118,7 +1240,7 @@ html[data-ld-theme] :is(
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin: -2px -2px 10px;
+  margin: 0;
   padding: 2px 2px 10px;
   border-bottom: 1px solid var(--ld-divider);
 }
@@ -1147,7 +1269,7 @@ html[data-ld-theme] :is(
   padding: 0;
   place-items: center;
   border: 1px solid transparent;
-  border-radius: 10px;
+  border-radius: 12px;
   background: transparent;
   color: var(--ld-picker-muted);
   font-size: 22px;
@@ -1165,10 +1287,21 @@ html[data-ld-theme] :is(
 
 .ld-theme-picker__options {
   display: grid;
-  gap: 4px;
+  gap: 3px;
   min-height: 0;
   max-height: none;
-  padding-right: 4px;
+  padding: 4px;
+  border: 1px solid color-mix(
+    in srgb,
+    var(--ld-control-border) 60%,
+    transparent
+  );
+  border-radius: 14px;
+  background: color-mix(
+    in srgb,
+    var(--ld-panel-soft) 58%,
+    transparent
+  );
   overflow-y: auto;
   scrollbar-gutter: stable;
 }
@@ -1181,7 +1314,7 @@ html[data-ld-theme] :is(
   padding: 8px 9px;
   align-items: center;
   border: 1px solid transparent;
-  border-radius: 9px;
+  border-radius: 11px;
   background: transparent;
   color: var(--ld-picker-text);
   text-align: left;
@@ -1270,8 +1403,8 @@ html[data-ld-theme] :is(
 .ld-theme-picker__intensity {
   display: grid;
   gap: 7px;
-  margin-top: 10px;
-  padding-top: 10px;
+  margin-top: 0;
+  padding-top: 9px;
   border-top: 1px solid var(--ld-divider);
   color: var(--ld-picker-muted);
   font-size: 12px;
@@ -1285,7 +1418,7 @@ html[data-ld-theme] :is(
 .ld-theme-picker__settings {
   display: grid;
   gap: 8px;
-  margin-top: 10px;
+  margin-top: 0;
 }
 
 .ld-theme-picker__setting {
@@ -1340,10 +1473,14 @@ html[data-ld-theme] :is(
 .ld-theme-picker__hero-draw {
   display: grid;
   gap: 8px;
-  margin-top: 10px;
+  margin-top: 0;
   padding: 10px;
-  border-top: 1px solid var(--ld-divider);
-  border-radius: 11px;
+  border: 1px solid color-mix(
+    in srgb,
+    var(--ld-control-border) 54%,
+    transparent
+  );
+  border-radius: 14px;
   background: color-mix(
     in srgb,
     var(--ld-panel-soft) 86%,
@@ -1359,7 +1496,7 @@ html[data-ld-theme] :is(
 
 .ld-theme-picker__hero-actions {
   display: grid;
-  grid-template-columns: 1.15fr 1fr 1fr;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 7px;
 }
 
@@ -1367,7 +1504,7 @@ html[data-ld-theme] :is(
   min-height: 36px;
   padding-inline: 8px;
   border: 0;
-  border-radius: 9px;
+  border-radius: 11px;
   background: var(--ld-panel-soft);
   color: var(--ld-picker-text);
   cursor: pointer;
@@ -1378,8 +1515,16 @@ html[data-ld-theme] :is(
 }
 
 .ld-theme-picker__hero-actions button:first-child {
+  grid-column: 1 / -1;
   background: var(--ld-accent);
   color: #ffffff;
+}
+
+.ld-theme-picker__hero-actions [data-ld-hide-companion] {
+  grid-column: 1 / -1;
+  border: 1px solid var(--ld-control-border);
+  background: transparent;
+  color: var(--ld-picker-muted);
 }
 
 .ld-theme-picker__hero-actions button:hover {
@@ -1392,13 +1537,13 @@ html[data-ld-theme] :is(
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 7px;
-  margin-top: 10px;
+  margin-top: 0;
 }
 
 .ld-theme-picker__media-actions button {
   min-height: 36px;
   border: 1px solid var(--ld-control-border);
-  border-radius: 9px;
+  border-radius: 12px;
   background: var(--ld-panel-soft);
   color: var(--ld-picker-text);
   cursor: pointer;
@@ -1411,7 +1556,7 @@ html[data-ld-theme] :is(
 .ld-theme-picker__status {
   display: block;
   min-height: 16px;
-  margin-top: 8px;
+  margin-top: 0;
 }
 
 .ld-theme-picker__status[data-ld-status="success"] {

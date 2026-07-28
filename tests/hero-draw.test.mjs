@@ -102,7 +102,7 @@ test("随机抽取在存在多个编号时避免立即重复", () => {
   assert.equal(pickHeroId([], () => 0.5, null), null);
 });
 
-test("英雄管理器支持整套、仅背景、仅伙伴三种随机动作并释放旧 URL", async () => {
+test("英雄背景与伙伴独立管理并释放旧 URL", async () => {
   const properties = new Map();
   const root = {
     dataset: {},
@@ -157,6 +157,7 @@ test("英雄管理器支持整套、仅背景、仅伙伴三种随机动作并�
   assert.deepEqual(manager.getState(), {
     backgroundId: "001",
     companionId: "001",
+    companionVisible: true,
     availableCount: 2,
   });
   assert.equal(root.dataset.ldHeroActive, "true");
@@ -168,6 +169,7 @@ test("英雄管理器支持整套、仅背景、仅伙伴三种随机动作并�
   assert.deepEqual(manager.getState(), {
     backgroundId: "009",
     companionId: "009",
+    companionVisible: true,
     availableCount: 2,
   });
   await manager.drawBackground();
@@ -177,22 +179,42 @@ test("英雄管理器支持整套、仅背景、仅伙伴三种随机动作并�
   assert.equal(manager.getState().backgroundId, "001");
   assert.equal(manager.getState().companionId, "001");
   assert.ok(revoked.length >= 4);
-  assert.equal(beforeActivateCount, 4);
+  assert.equal(beforeActivateCount, 3);
   assert.ok(writes.some(([key]) => key === "ld-hero-background-id"));
   assert.ok(writes.some(([key]) => key === "ld-hero-companion-id"));
 
   manager.disable();
   assert.equal(properties.has("--ld-hero-draw-image"), false);
   assert.equal(root.dataset.ldHeroActive, "false");
-  assert.equal(companion.hidden, true);
+  assert.equal(companion.hidden, false);
   assert.deepEqual(manager.getState(), {
     backgroundId: "001",
     companionId: "001",
+    companionVisible: true,
     availableCount: 2,
   });
   assert.ok(
     writes.some(
       ([key, value]) => key === "ld-hero-active" && value === false,
+    ),
+  );
+
+  await manager.drawCompanion();
+  assert.equal(properties.has("--ld-hero-draw-image"), false);
+  assert.equal(root.dataset.ldHeroActive, "false");
+  assert.equal(companion.hidden, false);
+  assert.equal(manager.getState().companionId, "009");
+  assert.equal(manager.getState().companionVisible, true);
+
+  manager.hideCompanion();
+  assert.equal(properties.has("--ld-hero-draw-image"), false);
+  assert.equal(root.dataset.ldHeroActive, "false");
+  assert.equal(companion.hidden, true);
+  assert.equal(manager.getState().companionVisible, false);
+  assert.ok(
+    writes.some(
+      ([key, value]) =>
+        key === "ld-hero-companion-visible" && value === false,
     ),
   );
 
@@ -306,17 +328,20 @@ test("导入统一素材包只登记英雄素材，不自动覆盖当前普通�
   assert.deepEqual(manager.getState(), {
     backgroundId: null,
     companionId: null,
+    companionVisible: false,
     availableCount: 2,
   });
 });
 
-test("主题面板只显示三个随机按钮，不显示英雄名称或手动选择列表", () => {
+test("主题面板显示三个随机动作和关闭伙伴按钮", () => {
   const markup = createThemePickerMarkup("crimson-duo", 0.78);
   assert.match(markup, /抽取你的 L 站英雄/);
   assert.equal((markup.match(/data-ld-draw-(?:hero|background|companion)/g) ?? []).length, 3);
   assert.match(markup, />抽取英雄</);
   assert.match(markup, />只换背景</);
   assert.match(markup, />只换伙伴</);
+  assert.match(markup, /data-ld-hide-companion/);
+  assert.match(markup, />关闭伙伴</);
   assert.doesNotMatch(markup, /data-ld-hero-option|英雄名称|始皇|始皇后/);
   assert.doesNotMatch(markup, /<select[^>]*data-ld-hero/);
 });

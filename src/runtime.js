@@ -59,6 +59,7 @@ export function applyThemeToRoot(root, themeKey, backgroundOpacity) {
   const panelOpacity = getPanelOpacityTokens(opacity);
 
   root.dataset.ldTheme = theme;
+  root.dataset.ldScheme = definition.scheme;
   if (definition.palette) {
     root.dataset.ldPalette = definition.palette;
   } else {

@@ -215,6 +215,7 @@ export function createThemePickerMarkup(
             <button type="button" data-ld-draw-hero>抽取英雄</button>
             <button type="button" data-ld-draw-background>只换背景</button>
             <button type="button" data-ld-draw-companion>只换伙伴</button>
+            <button type="button" data-ld-hide-companion>关闭伙伴</button>
           </div>
         </section>
         <div class="ld-theme-picker__media-actions">
@@ -337,6 +338,9 @@ export function mountThemePicker({
   );
   const drawCompanionButton = host.querySelector(
     "[data-ld-draw-companion]",
+  );
+  const hideCompanionButton = host.querySelector(
+    "[data-ld-hide-companion]",
   );
   const status = host.querySelector("[data-ld-media-status]");
   let activeDrag = null;
@@ -635,7 +639,9 @@ export function mountThemePicker({
     }
     setStatus(pendingMessage);
     try {
-      mediaManager?.suspend?.();
+      if (method !== "drawCompanion") {
+        mediaManager?.suspend?.();
+      }
       await heroManager[method]();
       setStatus("抽取完成", "success");
     } catch (error) {
@@ -651,6 +657,14 @@ export function mountThemePicker({
   });
   drawCompanionButton?.addEventListener("click", () => {
     drawHero("drawCompanion", "正在更换伙伴…");
+  });
+  hideCompanionButton?.addEventListener("click", () => {
+    if (!heroManager?.hideCompanion) {
+      setStatus("伙伴功能尚未初始化。", "error");
+      return;
+    }
+    heroManager.hideCompanion();
+    setStatus("伙伴已关闭", "success");
   });
 
   applyPickerPosition(getValue(PICKER_POSITION_KEY, null));

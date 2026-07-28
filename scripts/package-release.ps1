@@ -22,6 +22,7 @@ $suitePackDir = Join-Path $projectRoot "assets\media-pack\suite\v$Version"
 $deliverableDir = Join-Path $projectRoot "deliverables\v$Version"
 
 $fullScriptName = "linuxdo-theme-suite-v$Version-full.user.js"
+$coreScriptName = "linuxdo-theme-suite-v$Version-core.user.js"
 $suitePackName = "linuxdo-theme-suite-v$Version-suite-pack.zip"
 $manualName = "LINUX-DO-Theme-Suite-v$Version-User-Guide.zh-CN.md"
 
@@ -210,6 +211,9 @@ Reset-ProjectDirectory -Path $deliverableDir
 Copy-Item -LiteralPath (Join-Path $projectRoot `
         'dist\linuxdo-theme-suite.user.js') `
     -Destination (Join-Path $deliverableDir $fullScriptName) -Force
+Copy-Item -LiteralPath (Join-Path $projectRoot `
+        'dist\linuxdo-theme-suite-core.user.js') `
+    -Destination (Join-Path $deliverableDir $coreScriptName) -Force
 Compress-Archive -Path (Join-Path $suitePackDir '*') `
     -DestinationPath (Join-Path $deliverableDir $suitePackName) `
     -CompressionLevel Optimal
@@ -223,7 +227,8 @@ Copy-Item -LiteralPath (Join-Path $projectRoot 'ASSET-SOURCES.md') `
 @"
 # LINUX DO Theme Suite v$Version 发布文件
 
-- `$fullScriptName`：油猴安装脚本，内置 41 套静态主题。
+- `$coreScriptName`：推荐安装的轻量油猴脚本；配合统一素材包使用。
+- `$fullScriptName`：可选离线完整脚本，内置 41 套静态主题。
 - `$suitePackName`：统一素材包，包含常规主题、动态素材和随机英雄。
 - `$manualName`：安装、更新、使用、卸载和故障处理手册。
 - `LICENSE`：代码许可证。

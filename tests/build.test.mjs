@@ -210,6 +210,12 @@ test("构建生成仅匹配 linux.do 的离线单文件脚本", () => {
   );
   assert.doesNotMatch(coreOutput, /data:image\/jpeg;base64,/);
   assert.match(coreOutput, /LINUX DO Theme Suite Core/);
+  assert.ok(
+    statSync(
+      path.join(projectRoot, "dist", "linuxdo-theme-suite-core.user.js"),
+    ).size < 250_000,
+    "核心脚本体积应保持在 250 KB 以内",
+  );
   assert.match(output, /indexedDB/);
   assert.match(output, /ld-theme-suite-video/);
   assert.match(output, /webkitdirectory/);
@@ -454,7 +460,7 @@ test("常规壁纸扩展生成 30 套安全宽屏资源并进入统一素材包"
   );
 });
 
-test("抽取英雄会先暂停常规媒体层，普通主题切换会关闭英雄层", () => {
+test("抽取英雄会先暂停常规媒体层，普通主题切换仅关闭英雄背景", () => {
   const pickerSource = readFileSync(
     path.join(projectRoot, "src", "theme-picker.js"),
     "utf8",
@@ -500,9 +506,57 @@ test("构建与发布文件名统一读取当前项目版本", () => {
     releaseScript,
     /\$fullScriptName\s*=\s*"linuxdo-theme-suite-v\$Version-full\.user\.js"/,
   );
+  assert.match(
+    releaseScript,
+    /\$coreScriptName\s*=\s*"linuxdo-theme-suite-v\$Version-core\.user\.js"/,
+  );
   assert.doesNotMatch(
     releaseScript,
     /linuxdo-theme-suite-v0\.4\.0-(?:full|core|source|static|dynamic)/,
+  );
+});
+
+test("暗色主题为评论参与者、标签与元信息提供独立高对比令牌", () => {
+  const styles = readFileSync(
+    path.join(projectRoot, "src", "styles.css"),
+    "utf8",
+  );
+
+  assert.match(styles, /--ld-chip-bg:/);
+  assert.match(styles, /--ld-chip-text:/);
+  assert.match(styles, /--ld-chip-border:/);
+  assert.match(styles, /\[data-ld-scheme="dark"\]/);
+  assert.match(styles, /\.topic-map__user/);
+  assert.match(styles, /\.topic-map__participant/);
+  assert.match(styles, /\.discourse-reactions-list \.user-list/);
+  assert.match(styles, /\.discourse-reactions-state-panel/);
+  assert.match(styles, /\.discourse-reactions-state-panel-reaction/);
+  assert.match(styles, /\.discourse-tag/);
+  assert.match(styles, /\.badge-category/);
+  assert.match(styles, /\.names \.username/);
+});
+
+test("主题工具窗使用分组圆角表面并为关闭伙伴提供完整操作行", () => {
+  const styles = readFileSync(
+    path.join(projectRoot, "src", "styles.css"),
+    "utf8",
+  );
+
+  assert.match(
+    styles,
+    /\.ld-theme-picker__panel\s*\{[\s\S]*?border-radius:\s*22px/,
+  );
+  assert.match(
+    styles,
+    /\.ld-theme-picker__options\s*\{[\s\S]*?border-radius:\s*14px/,
+  );
+  assert.match(
+    styles,
+    /\.ld-theme-picker__hero-actions\s*\{[\s\S]*?repeat\(2,\s*minmax\(0,\s*1fr\)\)/,
+  );
+  assert.match(
+    styles,
+    /\.ld-theme-picker__hero-actions\s*\[data-ld-hide-companion\][\s\S]*?grid-column:\s*1\s*\/\s*-1/,
   );
 });
 

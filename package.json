@@ -1,6 +1,6 @@
 {
   "name": "linuxdo-theme-suite",
-  "version": "0.9.0",
+  "version": "0.9.1",
   "description": "适用于 LINUX DO 的本地油猴主题、动态背景与随机英雄工具。",
   "private": true,
   "type": "module",
