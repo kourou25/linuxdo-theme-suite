@@ -23,7 +23,7 @@ $deliverableDir = Join-Path $projectRoot "deliverables\v$Version"
 
 $fullScriptName = "linuxdo-theme-suite-v$Version-full.user.js"
 $suitePackName = "linuxdo-theme-suite-v$Version-suite-pack.zip"
-$manualName = "LINUX-DO-Theme-Suite-v$Version-操作手册.md"
+$manualName = "LINUX-DO-Theme-Suite-v$Version-User-Guide.zh-CN.md"
 
 function Reset-ProjectDirectory {
     param([Parameter(Mandatory)][string]$Path)
